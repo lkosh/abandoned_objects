@@ -9,7 +9,8 @@
 NUM_IMAGE = 1
 
 
-
+from select2 import RubberbandEnhancedLabelMultiple
+#rom dataloader import DataLoader
 from PyQt4 import QtCore, QtGui
 
 try:
@@ -50,10 +51,13 @@ class Ui_Dialog(object):
         self.pushButton_6 = QtGui.QPushButton(Dialog)
         self.pushButton_6.setGeometry(QtCore.QRect(1310, 210, 99, 27))
         self.pushButton_6.setObjectName(_fromUtf8("pushButton_6"))
-        self.label = QtGui.QLabel(Dialog)
+        """ Custom class """
+        self.label = RubberbandEnhancedLabelMultiple(Dialog) #QtGui.QLabel(Dialog)
         self.label.setGeometry(QtCore.QRect(50, 70, 561, 411))
         self.label.setObjectName(_fromUtf8("label"))
-        self.label_2 = QtGui.QLabel(Dialog)
+        self.label_2 = RubberbandEnhancedLabelMultiple(Dialog) #QtGui.QLabel(Dialog)
+
+
         self.label_2.setGeometry(QtCore.QRect(670, 70, 561, 411))
         self.label_2.setObjectName(_fromUtf8("label_2"))
 
@@ -78,10 +82,15 @@ class Ui_Dialog(object):
         self.pushButton_6.setText(_translate("Dialog", "Пропал", None))
         self.label.setText(_translate("Dialog", "image_1", None))
         self.label_2.setText(_translate("Dialog", "image_2", None))
+
+        #create pixmap from image
         pixmap = QtGui.QPixmap('data/1.jpg')
+   
+
         self.label.setPixmap(pixmap)
 
         self.label_2.setPixmap(pixmap)
+        #self.selector = RubberbandEnhancedLabelMultiple()
 
     def next_image(self):
         """
@@ -94,6 +103,8 @@ class Ui_Dialog(object):
         self.label.setPixmap(pixmap)
 
         self.label_2.setPixmap(pixmap)
+        self.label.reset_selected()
+        self.label_2.reset_selected()
         return 
 
     def prev_image(self):
@@ -107,7 +118,8 @@ class Ui_Dialog(object):
         self.label.setPixmap(pixmap)
 
         self.label_2.setPixmap(pixmap)
-
+        self.label.reset_selected()
+        self.label_2.reset_selected()
         print ('previous...')
         pass
 

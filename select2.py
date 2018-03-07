@@ -89,22 +89,24 @@ class RubberbandEnhancedLabelMultiple(QtGui.QLabel):
                         min_sh = (self.upper_left[i] - position).manhattanLength()
                         min_i = i
                         string = "drag_upper_left"
-                    elif (self.lower_right[i] - position).manhattanLength() < min_sh:
+                    if (self.lower_right[i] - position).manhattanLength() < min_sh:
                         # close to lower right corner, drag it
                         #self.mode[i] = "drag_lower_right"
-                        min_sh = (self.upper_left[i] - position).manhattanLength()
+                        min_sh = (self.lower_right[i] - position).manhattanLength()
                         min_i = i
                         string =  "drag_lower_right"
                         fl = 1
-                    else:
-                        # clicked somewhere else, hide selection
-                        #self.selection.hide()
-                        self.selections[i].show()
+                    # else:
+                    #     # clicked somewhere else, hide selection
+                    #     #self.selection.hide()
+                    #     self.selections[i].show()
 
-                        pass
+                    #     pass
                     i += 1
-            if min_sh < 10:
-                print ("move")
+
+          
+            if min_sh < 50:
+              
                 self.mode[min_i] = string
 
             else:
@@ -114,7 +116,7 @@ class RubberbandEnhancedLabelMultiple(QtGui.QLabel):
                 self.mode[self.active_bboxes] = "drag_lower_right"
                 self.selections[self.active_bboxes].show()
 
-                print (self.active_bboxes, self.selections[self.active_bboxes].isVisible())
+                #print (self.active_bboxes, self.selections[self.active_bboxes].isVisible())
                 self.active_bboxes += 1
 
 
@@ -138,17 +140,26 @@ class RubberbandEnhancedLabelMultiple(QtGui.QLabel):
     def mouseReleaseEvent(self, event):
         self.mode = [" " for i in range(self.max_bboxes)]
 
+    def reset_selected(self):
+        for sel in self.selections:
+            sel.hide()
+        self.selections = [QtGui.QRubberBand(QtGui.QRubberBand.Rectangle, self) for i in range(self.max_bboxes)]
+        self.active_bboxes = 0
+        self.upper_left = [QtCore.QPoint() for i in range(self.max_bboxes)]
+        self.lower_right = [QtCore.QPoint() for i in range(self.max_bboxes)]
+        self.mode = [" " for i in range(self.max_bboxes)]
 
-app = QtGui.QApplication([])
 
-screen_pixmap = QtGui.QPixmap('data/1.jpg')#.grabWindow(app.desktop().winId())
+# app = QtGui.QApplication([])
 
-window = QtGui.QWidget()
-layout = QtGui.QVBoxLayout(window)
-label = RubberbandEnhancedLabelMultiple()
-label.setPixmap(screen_pixmap)
-layout.addWidget(label)
-geometry = app.desktop().availableGeometry()
-window.setFixedSize(500, 500)
-window.show()
-app.exec_()
+# screen_pixmap = QtGui.QPixmap('data/1.jpg')#.grabWindow(app.desktop().winId())
+
+# window = QtGui.QWidget()
+# layout = QtGui.QVBoxLayout(window)
+# label = RubberbandEnhancedLabelMultiple()
+# label.setPixmap(screen_pixmap)
+# layout.addWidget(label)
+# geometry = app.desktop().availableGeometry()
+# window.setFixedSize(500, 500)
+# window.show()
+# app.exec_()
