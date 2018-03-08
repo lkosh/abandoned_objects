@@ -64,6 +64,16 @@ class RubberbandEnhancedLabelMultiple(QtGui.QLabel):
         self.upper_left = [QtCore.QPoint() for i in range(self.max_bboxes)]
         self.lower_right = [QtCore.QPoint() for i in range(self.max_bboxes)]
         self.mode = [" " for i in range(self.max_bboxes)]
+        self.category = [0]*self.max_bboxes
+ 
+    def change_color(self, i):
+        d = {0:'red' ,1:'blue', 2:'green'}
+        c = QtGui.QColor(d[i])
+        palette = QtGui.QPalette(c)
+        self.category[self.active_bboxes-1] = i
+        self.selections[self.active_bboxes-1].setPalette(palette)
+        #self.selections[self.active_bboxes].setPalette(QPallete(QColor('red')))
+
 
     def mousePressEvent(self, event):
         '''
