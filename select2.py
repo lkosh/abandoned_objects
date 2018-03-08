@@ -1,54 +1,54 @@
 from PyQt4 import QtGui, QtCore
 
-
-class RubberbandEnhancedLabel(QtGui.QLabel):
-
-    def __init__(self, parent=None):
-        QtGui.QLabel.__init__(self, parent)
-        self.selection = QtGui.QRubberBand(QtGui.QRubberBand.Rectangle, self)
-
-    def mousePressEvent(self, event):
-        '''
-            Mouse is pressed. If selection is visible either set dragging mode (if close to border) or hide selection.
-            If selection is not visible make it visible and start at this point.
-        '''
-
-        if event.button() == QtCore.Qt.LeftButton:
-
-            position = QtCore.QPoint(event.pos())
-            if self.selection.isVisible():
-                # visible selection
-                if (self.upper_left - position).manhattanLength() < 20:
-                    # close to upper left corner, drag it
-                    self.mode = "drag_upper_left"
-                elif (self.lower_right - position).manhattanLength() < 20:
-                    # close to lower right corner, drag it
-                    self.mode = "drag_lower_right"
-                else:
-                    # clicked somewhere else, hide selection
-                    #self.selection.show()#hide()
-                    pass
-            else:
-                # no visible selection, start new selection
-                self.upper_left = position
-                self.lower_right = position
-                self.mode = "drag_lower_right"
-                self.selection.show()
-
-    def mouseMoveEvent(self, event):
-        '''
-            Mouse moved. If selection is visible, drag it according to drag mode.
-        '''
-        if self.selection.isVisible():
-            # visible selection
-            if self.mode is "drag_lower_right":
-                self.lower_right = QtCore.QPoint(event.pos())
-            elif self.mode is "drag_upper_left":
-                self.upper_left = QtCore.QPoint(event.pos())
-            # update geometry
-            self.selection.setGeometry(QtCore.QRect(self.upper_left, self.lower_right).normalized())
-
-
+#
+# class RubberbandEnhancedLabel(QtGui.QLabel):
+#
+#     def __init__(self, parent=None):
+#         QtGui.QLabel.__init__(self, parent)
+#         self.selection = QtGui.QRubberBand(QtGui.QRubberBand.Rectangle, self)
+#
+#     def mousePressEvent(self, event):
+#         '''
+#             Mouse is pressed. If selection is visible either set dragging mode (if close to border) or hide selection.
+#             If selection is not visible make it visible and start at this point.
+#         '''
+#
+#         if event.button() == QtCore.Qt.LeftButton:
+#
+#             position = QtCore.QPoint(event.pos())
+#             if self.selection.isVisible():
+#                 # visible selection
+#                 if (self.upper_left - position).manhattanLength() < 20:
+#                     # close to upper left corner, drag it
+#                     self.mode = "drag_upper_left"
+#                 elif (self.lower_right - position).manhattanLength() < 20:
+#                     # close to lower right corner, drag it
+#                     self.mode = "drag_lower_right"
+#                 else:
+#                     # clicked somewhere else, hide selection
+#                     #self.selection.show()#hide()
+#                     pass
+#             else:
+#                 # no visible selection, start new selection
+#                 self.upper_left = position
+#                 self.lower_right = position
+#                 self.mode = "drag_lower_right"
+#                 self.selection.show()
+#
+#     def mouseMoveEvent(self, event):
+#         '''
+#             Mouse moved. If selection is visible, drag it according to drag mode.
+#         '''
+#         if self.selection.isVisible():
+#             # visible selection
+#             if self.mode is "drag_lower_right":
+#                 self.lower_right = QtCore.QPoint(event.pos())
+#             elif self.mode is "drag_upper_left":
+#                 self.upper_left = QtCore.QPoint(event.pos())
+#             # update geometry
+#             self.selection.setGeometry(QtCore.QRect(self.upper_left, self.lower_right).normalized())
+#
+#
 
 
 
@@ -70,8 +70,8 @@ class RubberbandEnhancedLabelMultiple(QtGui.QLabel):
         d = {0:'red' ,1:'blue', 2:'green'}
         c = QtGui.QColor(d[i])
         palette = QtGui.QPalette(c)
-        self.category[self.active_bboxes-1] = i
-        self.selections[self.active_bboxes-1].setPalette(palette)
+        self.category[self.active_bboxes] = i
+        self.selections[self.active_bboxes].setPalette(palette)
         #self.selections[self.active_bboxes].setPalette(QPallete(QColor('red')))
 
 
@@ -159,7 +159,17 @@ class RubberbandEnhancedLabelMultiple(QtGui.QLabel):
         self.lower_right = [QtCore.QPoint() for i in range(self.max_bboxes)]
         self.mode = [" " for i in range(self.max_bboxes)]
 
+    def keyPressEvent(self, event):
+        print ("key")
+        if event.key()==(QtCore.Qt.Key_Backspace):
+            print ('ctrl z')
+            self.selections[self.active_bboxes].hide()
+            self.active_bboxes -= 1
 
+    def resizeEvent(self, event):
+        self.setPixmap(self._pixmap.scaled(
+            self.width(), self.height(),
+            QtCore.Qt.KeepAspectRatio))
 # app = QtGui.QApplication([])
 
 # screen_pixmap = QtGui.QPixmap('data/1.jpg')#.grabWindow(app.desktop().winId())
